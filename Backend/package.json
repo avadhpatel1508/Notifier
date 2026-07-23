@@ -11,6 +11,14 @@
   "type": "commonjs",
   "description": "",
   "dependencies": {
-    "express": "^5.2.1"
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.5.0",
+    "mongoose": "^9.8.0",
+    "nodemon": "^3.1.14",
+    "validator": "^13.15.35"
   }
 }
