@@ -8,7 +8,8 @@ const db = require("../config/db");
     const { Worker } = require("bullmq");
     const connection = require("../config/redis");
     const Notification = require("../models/Notification");
-    const ConsoleProvider = require("../providers/ConsoleProvider");
+    const ProviderFactory = require('../providers/ProviderFactory');
+
 
     const worker = new Worker(
         "notificationQueue",
@@ -28,20 +29,30 @@ const db = require("../config/db");
                 notification.status = "processing";
                 await notification.save();
 
-                await ConsoleProvider.send(notification);
+                const provider = ProviderFactory.getProvider(notification.channel);
+                await provider.send(notification);
 
                 notification.status = "sent";
                 await notification.save();
 
                 console.log(`Notification ${notification._id} sent`);
             } catch (err) {
-                notification.status = "failed";
+                notification.attempts += 1;
                 await notification.save();
+                console.log(job.attemptsMade);
                 throw err;
             }
         },
         { connection }
     );
 
-    console.log("Notification Worker Started");
+    worker.on("completed", (job) => {
+        console.log(`Job ${job.id} completed`);
+    });
+
+    worker.on("failed", (job, err) => {
+        console.log( `Job ${job.id} failed (${job.attemptsMade}/${job.opts.attempts}): ${err.message}`);
+    });
+
+   
 })();

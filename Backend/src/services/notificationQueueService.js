@@ -5,7 +5,16 @@ const addNotificationJob = async (notificationId) => {
 
     const job = await notificationQueue.add(
         "send-notification",
-        { notificationId }
+        { notificationId },
+        {
+            attempts: 3,
+            backoff: {
+                type: "exponential",
+                delay: 5000,
+            },
+            removeOnComplete: true,
+            removeOnFail: false,
+        }
     );
 
     console.log("Job Created:", job.id);
