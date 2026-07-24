@@ -1,6 +1,6 @@
 require("dotenv").config();
 const Notification = require("../models/Notification");
-
+const { addNotificationJob } = require("../services/notificationQueueService");
 const createNotificaiton = async (req, res) => {
     try {
         const {id}= req.user;
@@ -22,10 +22,10 @@ const createNotificaiton = async (req, res) => {
             status: "queued",
             attempts: 0
         });
-
+        await addNotificationJob(notification._id);
         return res.status(201).json({
             success: true,
-            message: "Notification created successfully.",
+            message: "Notification created and sent successfully.",
             notification
         });
 
