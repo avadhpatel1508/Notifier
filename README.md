@@ -216,8 +216,7 @@ updatedAt
 ## Clone Repository
 
 ```bash
-git clone <repository-url>
-cd notification-service
+git clone https://github.com/avadhpatel1508/Notifier.git
 ```
 
 ---
